@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Restaurapp</string>
+    <string name="dish_price">Precio: %.2f €</string>
 </resources>
