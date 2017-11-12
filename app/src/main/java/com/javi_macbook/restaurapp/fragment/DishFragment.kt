@@ -9,11 +9,34 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.javi_macbook.restaurapp.R
 import com.javi_macbook.restaurapp.model.Dish
+import com.javi_macbook.restaurapp.model.Table
 
 
 class DishFragment : Fragment() {
 
+    companion object {
+
+        val ARG_TABLE = "ARG_TABLE"
+
+        // Creo esta funcion para recibir la instancia de este Fragment, con la mesa como argumento
+        fun newInstance(table: Table): DishFragment {
+            val fragment = DishFragment()
+            val arguments = Bundle()
+            arguments.putSerializable(ARG_TABLE, table)
+            fragment.arguments = arguments
+
+            return fragment
+        }
+    }
+
     lateinit var root: View
+
+    var table: Table? = null
+        set(value){
+            if(value != null){
+                dish = value.dish
+            }
+        }
 
     var dish: Dish? = null
         set(value){
@@ -41,7 +64,9 @@ class DishFragment : Fragment() {
         if (inflater != null) {
 
             root = inflater.inflate(R.layout.fragment_dish, container, false)
-            dish = Dish("Porra Antequerana", R.drawable.porra,15.95f,"Plato antequerano típico","Ninguno")
+            if (arguments != null){
+                table = arguments.getSerializable(ARG_TABLE) as? Table
+            }
         }
 
         return root

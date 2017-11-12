@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/large_margin">
+    android:padding="@dimen/default_margin">
 
     <ImageView
         android:id="@+id/dish_image"
@@ -18,7 +18,8 @@
         android:src="@drawable/porra"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/dish_image" />
 
     <LinearLayout
         android:id="@+id/dish_information"
@@ -27,6 +28,7 @@
         android:orientation="vertical"
         android:layout_marginTop="@dimen/default_margin"
         android:layout_marginRight="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_toEndOf="@+id/dish_image"

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Restaurapp</string>
     <string name="dish_price">Precio: %.2f €</string>
+    <string name="previous">Anterior</string>
+    <string name="next">Siguiente</string>
+    <string name="dish_image">Imagen del plato</string>
 </resources>
