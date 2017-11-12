@@ -1,6 +1,8 @@
 package com.javi_macbook.restaurapp.activity
 
 import android.app.Fragment
+import android.content.Context
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v13.app.FragmentPagerAdapter
@@ -13,6 +15,16 @@ import com.javi_macbook.restaurapp.fragment.DishFragment
 import com.javi_macbook.restaurapp.model.Tables
 
 class TablePagerActivity : AppCompatActivity() {
+
+    companion object {
+        val EXTRA_TABLE_INDEX = "EXTRA_TABLE_INDEX"
+
+        fun intent(context: Context, tableIndex: Int): Intent{
+            val intent = Intent(context, TablePagerActivity::class.java)
+            intent.putExtra(EXTRA_TABLE_INDEX, tableIndex)
+            return intent
+        }
+    }
 
     val pager by lazy {findViewById<ViewPager>(R.id.view_pager)}
     val tables = Tables()
@@ -51,7 +63,10 @@ class TablePagerActivity : AppCompatActivity() {
 
         })
 
-        updateTableInfo(0)
+        // Cuando arranca la actividad, recibo el extra del intent, para saber la mesa a mostrar
+        val initialTableIndex = intent.getIntExtra(EXTRA_TABLE_INDEX, 0)
+        pager.currentItem = initialTableIndex
+        updateTableInfo(initialTableIndex)
     }
 
     // función para refrescar el título segun la posicion

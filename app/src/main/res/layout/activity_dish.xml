@@ -7,11 +7,10 @@
     android:layout_height="match_parent"
     tools:context="com.javi_macbook.restaurapp.activity.DishActivity">
 
-    <fragment
-        android:id="@+id/dish_fragment"
+    <FrameLayout
+        android:id="@+id/table_list_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.javi_macbook.restaurapp.fragment.DishFragment"/>
+        android:layout_height="match_parent"/>
 
 
 </FrameLayout>
