@@ -20,26 +20,17 @@ class TableListFragment : Fragment() {
 
     companion object {
 
-        private val ARG_TABLES = "ARG_TABLES"
-
-        fun newInstance(tables: Tables): TableListFragment {
+        fun newInstance(): TableListFragment {
             val fragment = TableListFragment()
-            val args = Bundle()
-            args.putSerializable(ARG_TABLES, tables)
-            fragment.arguments = args
             return fragment
         }
     }
 
     lateinit var root: View
-    private var tables: Tables? = null
     private var onTableSelectedListener: OnTableSelectedListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            tables = arguments.getSerializable(ARG_TABLES) as? Tables
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -48,13 +39,13 @@ class TableListFragment : Fragment() {
         if (inflater != null){
             root = inflater.inflate(R.layout.fragment_table_list, container, false)
             val list = root.findViewById<ListView>(R.id.table_list)
-            val adapter = ArrayAdapter<Table>(activity, android.R.layout.simple_list_item_1, tables?.toArray())
+            val adapter = ArrayAdapter<Table>(activity, android.R.layout.simple_list_item_1, Tables.toArray())
             list.adapter = adapter
 
             // Averiguamos que se ha pulsado un elemento de la lista
             list.setOnItemClickListener { parent, view, position, id ->
                 // Aviso al listener del fragment
-                onTableSelectedListener?.onTableSelected(tables?.get(position), position)
+                onTableSelectedListener?.onTableSelected(Tables.get(position), position)
             }
         }
 
@@ -66,6 +57,7 @@ class TableListFragment : Fragment() {
         commonAttach(context)
     }
 
+    @Suppress("OverridingDeprecatedMember", "DEPRECATION")
     override fun onAttach(activity: Activity?) {
         super.onAttach(activity)
         commonAttach(activity)

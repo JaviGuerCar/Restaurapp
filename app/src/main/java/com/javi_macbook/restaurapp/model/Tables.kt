@@ -3,7 +3,7 @@ package com.javi_macbook.restaurapp.model
 import com.javi_macbook.restaurapp.R
 import java.io.Serializable
 
-class Tables : Serializable {
+object Tables : Serializable {
     private var tables: List<Table> = listOf(
             Table("Mesa 1", Dish("Porra Antequerana", R.drawable.porra,15.95f,"Plato antequerano típico","Ninguno")),
             Table("Mesa 2", Dish("Bienmesabe", R.drawable.bienmesabe,15.95f,"Postre antequerano típico","Ninguno"))
