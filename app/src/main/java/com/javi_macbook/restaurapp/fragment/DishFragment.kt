@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ViewSwitcher
 import com.javi_macbook.restaurapp.R
 import com.javi_macbook.restaurapp.model.Dish
 import com.javi_macbook.restaurapp.model.Table
@@ -22,6 +23,11 @@ import java.util.*
 
 
 class DishFragment : Fragment() {
+
+    enum class VIEW_INDEX(val index: Int) {
+        LOADING(0),
+        FORECAST(1)
+    }
 
     companion object {
 
@@ -39,6 +45,7 @@ class DishFragment : Fragment() {
     }
 
     lateinit var root: View
+    lateinit var viewSwitcher: ViewSwitcher
 
     var table: Table? = null
         set(value){
@@ -65,6 +72,8 @@ class DishFragment : Fragment() {
 
                 val priceString = getString(R.string.dish_price, value.price)
                 dishPrice.text = priceString
+
+                viewSwitcher.displayedChild = VIEW_INDEX.FORECAST.index
             }
             else {
                 updateDish()
@@ -78,6 +87,10 @@ class DishFragment : Fragment() {
         if (inflater != null) {
 
             root = inflater.inflate(R.layout.fragment_dish, container, false)
+            viewSwitcher = root.findViewById(R.id.view_switcher)
+            viewSwitcher.setInAnimation(activity, android.R.anim.fade_in)
+            viewSwitcher.setOutAnimation(activity, android.R.anim.fade_out)
+
             if (arguments != null){
                 table = arguments.getSerializable(ARG_TABLE) as? Table
             }
@@ -93,6 +106,8 @@ class DishFragment : Fragment() {
     }
 
     private fun updateDish() {
+        viewSwitcher.displayedChild = VIEW_INDEX.LOADING.index
+
         async(UI) {
             // Esto ejecuta la descarga en 2º plano
             val newDish: Deferred<Dish?> = bg {
