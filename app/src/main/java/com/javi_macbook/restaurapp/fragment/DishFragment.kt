@@ -11,9 +11,14 @@ import android.widget.TextView
 import com.javi_macbook.restaurapp.R
 import com.javi_macbook.restaurapp.model.Dish
 import com.javi_macbook.restaurapp.model.Table
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.coroutines.experimental.bg
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.*
 
 
 class DishFragment : Fragment() {
@@ -88,50 +93,26 @@ class DishFragment : Fragment() {
     }
 
     private fun updateDish() {
-
-        val dishesDownloader = object: AsyncTask<Table, Int, Dish?>(){
-
-            override fun onPreExecute() {
-                super.onPreExecute()
+        async(UI) {
+            // Esto ejecuta la descarga en 2º plano
+            val newDish: Deferred<Dish?> = bg {
+                downloadDish(table)
             }
 
-            override fun doInBackground(vararg params: Table): Dish? {
-               return downloadDish(params[0])
-            }
-
-            override fun onPostExecute(result: Dish?) {
-                super.onPostExecute(result)
-                if (result != null){
-                    // No hay errores, actualizo la interfaz
-                    table?.dish = result
-                    dish = result // Actualiza la interfaz
-                }
-            }
+            dish = newDish.await()
 
         }
 
-        dishesDownloader.execute(table)
-
     }
 
-    fun downloadDish(table: Table): Dish? {
+    fun downloadDish(table: Table?): Dish? {
         try {
             // Descargo la informacion de internet
             var url = URL("http://www.mocky.io/v2/5a0a3ce02e0000cc13489c43")
-            val con = url.openConnection() as HttpURLConnection
-            con.connect()
-            val data = ByteArray(1024)
-            var downloadedBytes:Int
-            val input = con.inputStream
-            var sb = StringBuilder()
-            downloadedBytes = input.read(data)
-            while (downloadedBytes != -1){
-                sb.append(String(data,0,downloadedBytes))
-                downloadedBytes = input.read(data)
-            }
+            val jsonString = Scanner(url.openStream(), "UTF-8").useDelimiter("\\A").next()
 
             // Analizamos los datos que nos acabamos de descargar
-            val jsonRoot = JSONObject(sb.toString())
+            val jsonRoot = JSONObject(jsonString)
             val listDish = jsonRoot.getJSONArray("platos")
             val plato = listDish.getJSONObject(0)
             val name = plato.getString("nombre")
@@ -148,7 +129,9 @@ class DishFragment : Fragment() {
                 else -> R.drawable.porra
             }
 
-        return Dish(name, imageResource, price, description, alergen)
+            Thread.sleep(5000)
+
+            return Dish(name, imageResource, price, description, alergen)
 
         } catch (ex: Exception){
             ex.printStackTrace()
