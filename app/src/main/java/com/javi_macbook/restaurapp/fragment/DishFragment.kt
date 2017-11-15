@@ -1,5 +1,6 @@
 package com.javi_macbook.restaurapp.fragment
 
+import android.app.AlertDialog
 import android.app.Fragment
 import android.os.AsyncTask
 import android.os.Bundle
@@ -74,6 +75,8 @@ class DishFragment : Fragment() {
                 dishPrice.text = priceString
 
                 viewSwitcher.displayedChild = VIEW_INDEX.FORECAST.index
+                // SuperCache
+                table?.dish = value
             }
             else {
                 updateDish()
@@ -114,7 +117,24 @@ class DishFragment : Fragment() {
                 downloadDish(table)
             }
 
-            dish = newDish.await()
+            val downloadedDish = newDish.await()
+
+            if (downloadedDish != null) {
+                // Tó ha ido bien, se lo asigno al atributo dish
+                dish = downloadedDish
+            }
+            else {
+                // Ha habido algún tipo de error, se lo decimos al usuario con un diálogo
+                AlertDialog.Builder(activity)
+                        .setTitle("Error")
+                        .setMessage("No me pude descargar la información del tiempo")
+                        .setPositiveButton("Reintentar", { dialog, _ ->
+                            dialog.dismiss()
+                            updateDish()
+                        })
+                        .setNegativeButton("Salir", { _, _ -> activity.finish() })
+                        .show()
+            }
 
         }
 
@@ -144,7 +164,7 @@ class DishFragment : Fragment() {
                 else -> R.drawable.porra
             }
 
-            Thread.sleep(5000)
+            Thread.sleep(1000)
 
             return Dish(name, imageResource, price, description, alergen)
 
