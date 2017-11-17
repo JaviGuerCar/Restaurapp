@@ -4,6 +4,9 @@ import android.app.AlertDialog
 import android.app.Fragment
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ViewSwitcher
 import com.javi_macbook.restaurapp.R
+import com.javi_macbook.restaurapp.adapter.DishRecyclerViewAdapter
 import com.javi_macbook.restaurapp.model.Dish
 import com.javi_macbook.restaurapp.model.Table
 import kotlinx.coroutines.experimental.Deferred
@@ -47,6 +51,7 @@ class DishFragment : Fragment() {
 
     lateinit var root: View
     lateinit var viewSwitcher: ViewSwitcher
+    lateinit var dishList: RecyclerView
 
     var table: Table? = null
         set(value){
@@ -56,23 +61,15 @@ class DishFragment : Fragment() {
             }
         }
 
-    var dish: Dish? = null
+    var dish: List<Dish>? = null
         set(value){
             field = value
-            // Accedemos a las vistas
-            val dishImage = root.findViewById<ImageView>(R.id.dish_image)
-            val dishName = root.findViewById<TextView>(R.id.dish_name)
-            val dishDescription = root.findViewById<TextView>(R.id.dish_description)
-            val dishPrice = root.findViewById<TextView>(R.id.dish_price)
 
             // Actualizo la vista con el modelo
             if (value != null) {
-                dishImage.setImageResource(value.image)
-                dishName.text = value.name
-                dishDescription.text = value.description
 
-                val priceString = getString(R.string.dish_price, value.price)
-                dishPrice.text = priceString
+                // Asignamos el adapter al RecyclerView ahora que tenemos datos
+                dishList.adapter = DishRecyclerViewAdapter(value)
 
                 viewSwitcher.displayedChild = VIEW_INDEX.FORECAST.index
                 // SuperCache
@@ -94,6 +91,20 @@ class DishFragment : Fragment() {
             viewSwitcher.setInAnimation(activity, android.R.anim.fade_in)
             viewSwitcher.setOutAnimation(activity, android.R.anim.fade_out)
 
+            // Accedemos al RecyclerView
+            dishList = root.findViewById(R.id.dish_list)
+
+            // Le decimos como debe visualizarse (LayoutManager)
+            dishList.layoutManager = LinearLayoutManager(activity)
+
+            // Le decimos como animarse
+            dishList.itemAnimator = DefaultItemAnimator()
+
+            // El RecyclerView necesita un adapter,
+            // aunque aquí aún no podemos ponerlo, ya que no tenemos los datos
+
+
+
             if (arguments != null){
                 table = arguments.getSerializable(ARG_TABLE) as? Table
             }
@@ -113,8 +124,8 @@ class DishFragment : Fragment() {
 
         async(UI) {
             // Esto ejecuta la descarga en 2º plano
-            val newDish: Deferred<Dish?> = bg {
-                downloadDish(table)
+            val newDish: Deferred<List<Dish>?> = bg {
+                downloadDish()
             }
 
             val downloadedDish = newDish.await()
@@ -140,33 +151,43 @@ class DishFragment : Fragment() {
 
     }
 
-    fun downloadDish(table: Table?): Dish? {
+    fun downloadDish(): List<Dish>? {
         try {
+            // Simulamos un retardo
+            Thread.sleep(1000)
+
             // Descargo la informacion de internet
-            var url = URL("http://www.mocky.io/v2/5a0a3ce02e0000cc13489c43")
+            val url = URL("http://www.mocky.io/v2/5a0a3ce02e0000cc13489c43")
             val jsonString = Scanner(url.openStream(), "UTF-8").useDelimiter("\\A").next()
 
             // Analizamos los datos que nos acabamos de descargar
             val jsonRoot = JSONObject(jsonString)
             val listDish = jsonRoot.getJSONArray("platos")
-            val plato = listDish.getJSONObject(0)
-            val name = plato.getString("nombre")
-            val description = plato.getString("descripcion")
-            val alergen = plato.getString("alergenos")
-            val price = plato.getDouble("precio").toFloat()
-            val image = plato.getString("image")
 
-            // Convertimos el texto imageString a Drawable
-            val imageInt = image.toInt()
-            val imageResource = when (imageInt){
-                1 -> R.drawable.porra
-                2 -> R.drawable.bienmesabe
-                else -> R.drawable.porra
+            // Nos creamos una lista mutable donde añadir los diferentes platos del JSON
+            val dishes = mutableListOf<Dish>()
+
+            // Recorremos la lista del JSON
+            for (dishIndex in 0..listDish.length() - 1){
+                val plato = listDish.getJSONObject(dishIndex)
+                val name = plato.getString("nombre")
+                val description = plato.getString("descripcion")
+                val alergen = plato.getString("alergenos")
+                val price = plato.getDouble("precio").toFloat()
+                val image = plato.getString("image")
+
+                // Convertimos el texto imageString a Drawable
+                val imageInt = image.toInt()
+                val imageResource = when (imageInt){
+                    1 -> R.drawable.porra
+                    2 -> R.drawable.bienmesabe
+                    else -> R.drawable.porra
+                }
+
+                dishes.add(Dish(name, imageResource, price, description, alergen))
             }
 
-            Thread.sleep(1000)
-
-            return Dish(name, imageResource, price, description, alergen)
+            return dishes
 
         } catch (ex: Exception){
             ex.printStackTrace()

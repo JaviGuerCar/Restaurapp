@@ -2,7 +2,7 @@ package com.javi_macbook.restaurapp.model
 
 import java.io.Serializable
 
-data class Table (var name: String, var dish: Dish?) : Serializable {
+data class Table (var name: String, var dish: List<Dish>?) : Serializable {
 
     constructor(name: String) : this(name, null)
 
