@@ -11,10 +11,15 @@ import com.javi_macbook.restaurapp.model.Dish
 
 class DishRecyclerViewAdapter(val dish: List<Dish>) : RecyclerView.Adapter<DishRecyclerViewAdapter.DishViewHolder>(){
 
+    // Me creo un atributo onClickListener para ir a la actividad de Detalle
+    var onClickListener: View.OnClickListener? = null
+
     // Se crea el ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): DishViewHolder {
         // Creo la vista y inflo el Layout Content_dish
         val view = LayoutInflater.from(parent?.context).inflate(R.layout.content_dish, parent, false)
+        // le decimos que nos informe cuando se pulse un ViewHolder
+        view.setOnClickListener(onClickListener)
         return DishViewHolder(view)
     }
 

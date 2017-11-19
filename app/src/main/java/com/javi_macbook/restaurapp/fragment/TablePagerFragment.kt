@@ -107,4 +107,8 @@ class TablePagerFragment: Fragment() {
             supportActionBar?.title = Tables[position].name
         }
     }
+
+    fun moveToTable(position: Int) {
+        pager.currentItem = position
+    }
 }

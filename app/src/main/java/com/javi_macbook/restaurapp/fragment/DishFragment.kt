@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ViewSwitcher
 import com.javi_macbook.restaurapp.R
+import com.javi_macbook.restaurapp.activity.DetailActivity
 import com.javi_macbook.restaurapp.adapter.DishRecyclerViewAdapter
 import com.javi_macbook.restaurapp.model.Dish
 import com.javi_macbook.restaurapp.model.Table
@@ -69,7 +70,18 @@ class DishFragment : Fragment() {
             if (value != null) {
 
                 // Asignamos el adapter al RecyclerView ahora que tenemos datos
-                dishList.adapter = DishRecyclerViewAdapter(value)
+                val adapter = DishRecyclerViewAdapter(value)
+                dishList.adapter = adapter
+
+                // Le digo al RecyclerViewAdapter que me informe cuando pulsen sus vistas
+                adapter.onClickListener = View.OnClickListener { v:View? ->
+                    // Aqui me entero de que se ha pulsado y la posicion
+                    val position = dishList.getChildAdapterPosition(v)
+                    val dishToShow = value[position]
+                    // Lanzamos la actividad
+                    startActivity(DetailActivity.intent(activity, dishToShow))
+
+                }
 
                 viewSwitcher.displayedChild = VIEW_INDEX.FORECAST.index
                 // SuperCache

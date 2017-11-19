@@ -45,7 +45,16 @@ class DishActivity : AppCompatActivity(), TableListFragment.OnTableSelectedListe
     }
 
     override fun onTableSelected(table: Table?, position: Int) {
-        startActivity(TablePagerActivity.intent(this, position))
+        // Obtenemos la referencia al ViewPager
+        val tablePagerFragment = fragmentManager.findFragmentById(R.id.fragment_table_pager) as? TablePagerFragment
+
+        // Si no hay viewPager, llamo a la actividad
+        if (tablePagerFragment == null) {
+            startActivity(TablePagerActivity.intent(this, position))
+        } else {
+            // Si hay viewPager, movemos el pager su sitio
+            tablePagerFragment.moveToTable(position)
+        }
     }
 
 }
