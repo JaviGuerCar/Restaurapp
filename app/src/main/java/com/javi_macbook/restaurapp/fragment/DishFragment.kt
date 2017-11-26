@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ViewSwitcher
+import com.javi_macbook.restaurapp.CONSTANT_URL_JSON
 import com.javi_macbook.restaurapp.R
 import com.javi_macbook.restaurapp.activity.DetailActivity
 import com.javi_macbook.restaurapp.adapter.DishRecyclerViewAdapter
@@ -116,7 +117,6 @@ class DishFragment : Fragment() {
             // aunque aquí aún no podemos ponerlo, ya que no tenemos los datos
 
 
-
             if (arguments != null){
                 table = arguments.getSerializable(ARG_TABLE) as? Table
             }
@@ -150,7 +150,7 @@ class DishFragment : Fragment() {
                 // Ha habido algún tipo de error, se lo decimos al usuario con un diálogo
                 AlertDialog.Builder(activity)
                         .setTitle("Error")
-                        .setMessage("No me pude descargar la información del tiempo")
+                        .setMessage("No me pude descargar la información de los platos")
                         .setPositiveButton("Reintentar", { dialog, _ ->
                             dialog.dismiss()
                             updateDish()
@@ -169,7 +169,7 @@ class DishFragment : Fragment() {
             Thread.sleep(1000)
 
             // Descargo la informacion de internet
-            val url = URL("http://www.mocky.io/v2/5a0a3ce02e0000cc13489c43")
+            val url = URL(CONSTANT_URL_JSON)
             val jsonString = Scanner(url.openStream(), "UTF-8").useDelimiter("\\A").next()
 
             // Analizamos los datos que nos acabamos de descargar
@@ -184,7 +184,7 @@ class DishFragment : Fragment() {
                 val plato = listDish.getJSONObject(dishIndex)
                 val name = plato.getString("nombre")
                 val description = plato.getString("descripcion")
-                val alergen = plato.getString("alergenos")
+                val alergens = plato.getJSONArray("alergenos")
                 val price = plato.getDouble("precio").toFloat()
                 val image = plato.getString("image")
 
@@ -192,11 +192,28 @@ class DishFragment : Fragment() {
                 val imageInt = image.toInt()
                 val imageResource = when (imageInt){
                     1 -> R.drawable.porra
-                    2 -> R.drawable.bienmesabe
-                    else -> R.drawable.porra
+                    2 -> R.drawable.ajo_blanco
+                    3 -> R.drawable.porrilla_setas
+                    4 -> R.drawable.gazpachuelo
+                    5 -> R.drawable.huevos_rotos
+                    6 -> R.drawable.pavo_salsa
+                    7 -> R.drawable.callos
+                    8 -> R.drawable.bienmesabe
+                    9 -> R.drawable.torrijas
+                    10 -> R.drawable.pestinos
+                    else -> R.drawable.noimage
                 }
 
-                dishes.add(Dish(name, imageResource, price, description, alergen))
+                // Transformo el JSONArray en una lista de Strings
+                val listAlergens = mutableListOf(String())
+                if (alergens != null){
+                    for (i in 0 until alergens.length()){
+                        listAlergens.add(alergens.getString(i))
+                    }
+                }
+
+
+                dishes.add(Dish(name, imageResource, price, description, listAlergens))
             }
 
             return dishes
