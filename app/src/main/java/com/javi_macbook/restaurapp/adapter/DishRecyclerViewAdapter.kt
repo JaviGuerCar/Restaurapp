@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.javi_macbook.restaurapp.R
@@ -13,6 +14,7 @@ class DishRecyclerViewAdapter(val dish: List<Dish>) : RecyclerView.Adapter<DishR
 
     // Me creo un atributo onClickListener para ir a la actividad de Detalle
     var onClickListener: View.OnClickListener? = null
+    var buttonListener: ButtonListener? = null
 
     // Se crea el ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): DishViewHolder {
@@ -36,8 +38,10 @@ class DishRecyclerViewAdapter(val dish: List<Dish>) : RecyclerView.Adapter<DishR
         // Accedemos a las vistas
         val dishImage = itemView.findViewById<ImageView>(R.id.dish_image)
         val dishName = itemView.findViewById<TextView>(R.id.dish_name)
-        val dishDescription = itemView.findViewById<TextView>(R.id.dish_description)
+        //val dishDescription = itemView.findViewById<TextView>(R.id.dish_description)
         val dishPrice = itemView.findViewById<TextView>(R.id.dish_price)
+        val addDishButton = itemView.findViewById<Button>(R.id.add_dish_button)
+        val removeDishButton = itemView.findViewById<Button>(R.id.remove_dish_button)
 
         fun bindDish(dish: Dish, position: Int) {
             // Necesitamos el contexto de una vista para hacer getString
@@ -46,11 +50,25 @@ class DishRecyclerViewAdapter(val dish: List<Dish>) : RecyclerView.Adapter<DishR
             // Actualizo la vista(itemView) con el modelo (Dish)
             dishImage.setImageResource(dish.image)
             dishName.text = dish.name
-            dishDescription.text = dish.description
+            //dishDescription.text = dish.description
 
             val priceString = context.getString(R.string.dish_price, dish.price)
             dishPrice.text = priceString
 
+            addDishButton.setOnClickListener(){
+                buttonListener?.addDish()
+            }
+
+            removeDishButton.setOnClickListener(){
+                buttonListener?.removeDish()
+            }
+
+
         }
+    }
+
+    interface ButtonListener {
+        fun addDish()
+        fun removeDish()
     }
 }

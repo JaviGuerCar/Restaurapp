@@ -5,6 +5,7 @@ import android.app.Fragment
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.ViewSwitcher
 import com.javi_macbook.restaurapp.CONSTANT_URL_JSON
 import com.javi_macbook.restaurapp.R
@@ -84,6 +86,19 @@ class DishFragment : Fragment() {
 
                 }
 
+                adapter.buttonListener = object : DishRecyclerViewAdapter.ButtonListener {
+                    override fun addDish() {
+                        Toast.makeText(activity, "Añado un plato", Toast.LENGTH_SHORT)
+                                .show()
+                    }
+
+                    override fun removeDish() {
+                        Toast.makeText(activity, "Elimino un plato", Toast.LENGTH_SHORT)
+                                .show()
+                    }
+
+                }
+
                 viewSwitcher.displayedChild = VIEW_INDEX.FORECAST.index
                 // SuperCache
                 table?.dish = value
@@ -108,7 +123,7 @@ class DishFragment : Fragment() {
             dishList = root.findViewById(R.id.dish_list)
 
             // Le decimos como debe visualizarse (LayoutManager)
-            dishList.layoutManager = LinearLayoutManager(activity)
+            dishList.layoutManager = GridLayoutManager(activity, resources.getInteger(R.integer.recycler_view_columns))
 
             // Le decimos como animarse
             dishList.itemAnimator = DefaultItemAnimator()

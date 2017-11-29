@@ -4,4 +4,5 @@
     <dimen name="large_margin">16dp</dimen>
     <dimen name="card_elevation">8dp</dimen>
     <dimen name="card_corner_radius">8dp</dimen>
+    <dimen name="small_margin">4dp</dimen>
 </resources>

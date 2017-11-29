@@ -12,4 +12,6 @@
     <string name="allergen04">Allergen04</string>
     <string name="allergen05">Allergen05</string>
     <string name="allergen06">Allergen06</string>
+    <string name="add_dish_button">+</string>
+    <string name="remove_dish_button">-</string>
 </resources>
