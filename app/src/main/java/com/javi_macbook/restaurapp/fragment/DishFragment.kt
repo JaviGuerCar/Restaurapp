@@ -11,16 +11,15 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
-import android.widget.ViewSwitcher
+import android.widget.*
 import com.javi_macbook.restaurapp.CONSTANT_URL_JSON
 import com.javi_macbook.restaurapp.R
 import com.javi_macbook.restaurapp.activity.DetailActivity
 import com.javi_macbook.restaurapp.adapter.DishRecyclerViewAdapter
 import com.javi_macbook.restaurapp.model.Dish
 import com.javi_macbook.restaurapp.model.Table
+import kotlinx.android.synthetic.main.content_dish.*
+import kotlinx.android.synthetic.main.dish_list.*
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -57,6 +56,9 @@ class DishFragment : Fragment() {
     lateinit var viewSwitcher: ViewSwitcher
     lateinit var dishList: RecyclerView
 
+    var totalPrice = mutableListOf<Float>()
+
+
     var table: Table? = null
         set(value){
             field = value
@@ -87,21 +89,42 @@ class DishFragment : Fragment() {
                 }
 
                 adapter.buttonListener = object : DishRecyclerViewAdapter.ButtonListener {
-                    override fun addDish() {
-                        Toast.makeText(activity, "Añado un plato", Toast.LENGTH_SHORT)
+                    override fun addDish(dish: Dish) {
+
+                        totalPrice.add(dish.price)
+                        var totalBill = totalPrice.sum()
+                        var totalBillString = String.format("Total: %.2f", totalBill).toString() + " €"
+                        price_text.setText(totalBillString)
+
+                        Toast.makeText(activity, "Añado el plato: ${dish.name}", Toast.LENGTH_SHORT)
                                 .show()
                     }
 
-                    override fun removeDish() {
-                        Toast.makeText(activity, "Elimino un plato", Toast.LENGTH_SHORT)
+                    override fun removeDish(dish: Dish) {
+                        totalPrice.remove(dish.price)
+                        var totalBill = totalPrice.sum()
+                        var totalBillString = String.format("Total: %.2f", totalBill).toString() + " €"
+                        price_text.setText(totalBillString)
+                        Toast.makeText(activity, "Elimino el plato: ${dish.name}", Toast.LENGTH_SHORT)
                                 .show()
+                    }
+
+                    override fun addNotes(position: Int) {
+
+                        Toast.makeText(activity, "Añado notas al plato nº: ${position}", Toast.LENGTH_SHORT)
+                                .show()
+
                     }
 
                 }
 
+
                 viewSwitcher.displayedChild = VIEW_INDEX.FORECAST.index
                 // SuperCache
                 table?.dish = value
+
+                adapter.notifyDataSetChanged()
+
             }
             else {
                 updateDish()
@@ -135,6 +158,7 @@ class DishFragment : Fragment() {
             if (arguments != null){
                 table = arguments.getSerializable(ARG_TABLE) as? Table
             }
+
         }
 
         return root
@@ -144,6 +168,14 @@ class DishFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
+    }
+
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser && dish != null) {
+            dishList.adapter.notifyDataSetChanged()
+        }
     }
 
     private fun updateDish() {

@@ -27,7 +27,7 @@ class TablePagerActivity : AppCompatActivity() {
 
         // Configuramos la Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.setLogo(R.mipmap.ic_launcher)
+        //toolbar.setLogo(R.mipmap.ic_launcher)
         setSupportActionBar(toolbar)
 
         // Recibimos el índice de la ciudad que queremos mostrar

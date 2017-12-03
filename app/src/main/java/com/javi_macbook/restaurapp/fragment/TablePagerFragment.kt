@@ -51,6 +51,9 @@ class TablePagerFragment: Fragment() {
                 override fun getPageTitle(position: Int) = Tables[position].name
             }
 
+            // le digo el límite de pager
+            pager.offscreenPageLimit = 10
+            // le digo su adapter
             pager.adapter = adapter
 
             // Método para cambiar el título al cambiar de ViewPager

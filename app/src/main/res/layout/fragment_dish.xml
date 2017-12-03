@@ -13,29 +13,6 @@
         android:layout_margin="@dimen/default_margin"
         android:indeterminate="true" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/dish_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-            <!--android:layout_marginBottom="70dp"-->
-
-
-    <!--<TextView-->
-        <!--android:id="@+id/price_text"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|left"-->
-        <!--android:layout_margin="@dimen/default_margin"-->
-        <!--android:text="200€"-->
-        <!--android:textSize="30dp"/>-->
-
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/delete_order_button"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|right"-->
-        <!--android:layout_margin="@dimen/default_margin"-->
-        <!--/>-->
+    <include layout="@layout/dish_list"></include>
 
 </ViewSwitcher>
