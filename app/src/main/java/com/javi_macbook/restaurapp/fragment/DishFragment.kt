@@ -96,7 +96,7 @@ class DishFragment : Fragment() {
                         var totalBillString = String.format("Total: %.2f", totalBill).toString() + " €"
                         price_text.setText(totalBillString)
 
-                        Toast.makeText(activity, "Añado el plato: ${dish.name}", Toast.LENGTH_SHORT)
+                        Toast.makeText(activity, "Plato añadido: ${dish.name}", Toast.LENGTH_SHORT)
                                 .show()
                     }
 
@@ -105,15 +105,13 @@ class DishFragment : Fragment() {
                         var totalBill = totalPrice.sum()
                         var totalBillString = String.format("Total: %.2f", totalBill).toString() + " €"
                         price_text.setText(totalBillString)
-                        Toast.makeText(activity, "Elimino el plato: ${dish.name}", Toast.LENGTH_SHORT)
+                        Toast.makeText(activity, "Plato eliminado: ${dish.name}", Toast.LENGTH_SHORT)
                                 .show()
                     }
 
                     override fun addNotes(position: Int) {
-
-                        Toast.makeText(activity, "Añado notas al plato nº: ${position}", Toast.LENGTH_SHORT)
+                        Toast.makeText(activity, "Notas añadidas al plato: ${position}", Toast.LENGTH_SHORT)
                                 .show()
-
                     }
 
                 }
