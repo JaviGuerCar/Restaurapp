@@ -86,6 +86,7 @@ class DishRecyclerViewAdapter(val dish: List<Dish>) : RecyclerView.Adapter<DishR
                 reloadOrderNumber(orderList.count())
                 if (orderList.count() >= 1){
                     removeDishButton.isEnabled = true
+                    addNotesButton.isEnabled = true
                 }
                 buttonListener?.addDish(dish)
             }
@@ -95,6 +96,7 @@ class DishRecyclerViewAdapter(val dish: List<Dish>) : RecyclerView.Adapter<DishR
                 reloadOrderNumber(orderList.count())
                 if (orderList.count() < 1){
                     removeDishButton.isEnabled = false
+                    addNotesButton.isEnabled = false
                 }
                 buttonListener?.removeDish(dish)
 
